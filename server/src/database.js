@@ -9,7 +9,7 @@ require('dotenv').config({ path: path.join(__dirname, '../../.env'), override: t
 // Create Sequelize instance first
 const dbName = process.env.DB_NAME || "rto_db";
 const dbUser = process.env.DB_USER || "rto";
-const dbPassword = process.env.DB_PASSWORD || "Kalbazaar@177";
+const dbPassword = process.env.DB_PASSWORD || "";
 const dbHost = process.env.DB_HOST || "31.97.61.5";
 const dbPort = process.env.DB_PORT || 3306;
 

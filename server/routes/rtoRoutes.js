@@ -31,48 +31,76 @@ const {
 router.post(
   '/upload',
   (req, res, next) => {
-    console.log('📤 Multer upload middleware called');
-    // Try multiple files first, fallback to single file
+    console.log('📤 Step 1: Upload route hit');
+
     upload.fields([
       { name: 'file', maxCount: 1 },
       { name: 'nimbuFile', maxCount: 1 },
-      { name: 'shipOwlFile', maxCount: 1 }
+      { name: 'shipOwlFile', maxCount: 1 },
+      { name: 'shipOwlNimbusFile', maxCount: 1 }
     ])(req, res, (err) => {
+
+      console.log('📤 Step 2: Multer middleware executed');
+
       if (err) {
-        console.error('❌ Multer error:', err);
+        console.error('❌ Step 3: Multer error:', err);
+
         if (err.code === 'LIMIT_FILE_SIZE') {
+          console.log('❌ File size limit exceeded');
           return res.status(400).json({
             error: 'File too large. Maximum size is 10MB per file.',
           });
         }
+
         if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+          console.log('❌ Unexpected field name received');
           return res.status(400).json({
             error:
-              'Unexpected field name. Please use "file" for Parcel X, "nimbuFile" for NimbusPost, and "shipOwlFile" for ShipOwl.',
+              'Unexpected field name. Please use "file" for Parcel X, "nimbuFile" for NimbusPost and "shipOwlFile" for ShipOwl. For ShipOwl Nimbus, use "shipOwlNimbusFile".',
           });
         }
+
+        console.log('❌ Generic multer error');
         return res.status(400).json({
           error: err.message || 'File upload failed',
         });
       }
-      
-      // Normalize files: combine req.files into a single array
+
+      console.log('✅ Step 4: Files received from multer');
+      console.log('req.files object:', req.files);
+      console.log('req.file object:', req.file);
+
+      // Normalize files
       if (req.files) {
+        console.log('📦 Step 5: Normalizing multiple files');
+
         req.files = [
           ...(req.files.file || []),
           ...(req.files.nimbuFile || []),
-          ...(req.files.shipOwlFile || [])
+          ...(req.files.shipOwlFile || []),
+          ...(req.files.shipOwlNimbusFile || [])
         ];
+
+        console.log('📦 Normalized files array:', req.files);
       } else if (req.file) {
-        // Fallback: if only single file upload, convert to array
+        console.log('📦 Step 6: Single file fallback');
+
         req.files = [req.file];
+      } else {
+        console.log('⚠️ Step 7: No files found in request');
       }
-      
-      console.log('✅ Multer upload middleware completed successfully');
+
+      console.log('✅ Step 8: Multer upload middleware completed');
       next();
     });
   },
-  uploadRTOData,
+
+  (req, res, next) => {
+    console.log('➡️ Step 9: Passing control to uploadRTOData controller');
+    next();
+  },
+
+  uploadRTOData
 );
 
 // Scan barcode

@@ -5,7 +5,7 @@ const addCourierToComplaints = async () => {
     host: process.env.DB_HOST || '31.97.61.5',
     port: process.env.DB_PORT || 3306,
     user: process.env.DB_USER || 'rto',
-    password: process.env.DB_PASSWORD || 'Kalbazaar@177',
+    password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'rto_db',
   });
 
